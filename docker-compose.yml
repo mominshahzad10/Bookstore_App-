@@ -1,0 +1,27 @@
+version: '3'  # Version of the Docker Compose file format
+
+services:
+  mongodb:
+    image: mongo # Use the official MongoDB image
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mominmongo  # Set MongoDB root username
+      - MONGO_INITDB_ROOT_PASSWORD=Aisha1234  # Set MongoDB root password
+    ports:
+      - "27017:27017"  # Expose MongoDB on port 27017 to the host
+    networks:
+      - app-network  # Connect MongoDB to the app-network network
+
+  flaskapp:
+    image: 379f6206e7e5  # Image ID for the Flask app container
+    ports:
+      - "5002:5000"  # Map port 5000 inside the container to port 5002 on the host
+    depends_on:
+      - mongodb  # Ensure Flask app starts after MongoDB
+    environment:
+      - MONGO_URI=mongodb://mominmongo:Aisha1234@mongodb:27017/BOOKSTORE  # Set MongoDB URI for the Flask app
+    networks:
+      - app-network  # Connect Flask app to the app-network network
+
+networks:
+  app-network:  # Define a network named app-network
+    driver: bridge  # Use the bridge driver for the network

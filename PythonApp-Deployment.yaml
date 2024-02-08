@@ -1,0 +1,41 @@
+apiVersion: apps/v1  # Version of the Kubernetes API for deployments
+kind: Deployment  # Type of resource being created, in this case a Deployment
+metadata:
+  name: python-app-development  # Name of the Deployment
+  labels:
+    app: python-app  # Label to identify the Deployment
+
+spec:  # Specification of the Deployment
+  replicas: 1  # Number of desired replicas
+  selector:
+    matchLabels:
+      app: python-app  # Selector to identify the pods that this deployment manages
+  template:
+    metadata:
+      labels:
+        app: python-app  # Labels for the pods
+    spec:
+      containers:
+      - name: python-app  # Container name
+        image: mominshahzad12/python-app:latest  # Image to use for the container
+        imagePullPolicy: Always  # Policy for pulling the image
+        ports:
+        - containerPort: 5002  # Port that the container exposes
+        env:
+          - name: MONGO_URI  # Environment variable for the container
+            value: "mongodb://mominmongo:Aisha1234@mongodb:27017/BOOKSTORE"
+
+---
+apiVersion: v1  # Version of the Kubernetes API for services
+kind: Service  # Type of resource, a Service
+metadata:
+  name: python-app-service  # Name of the Service
+
+spec:  # Specification of the Service
+  selector:
+    app: python-app  # Selector to identify the pods that this service routes to
+  ports:
+  - protocol: TCP
+    port: 5002  # The port the service is exposed on
+    targetPort: 5002  # The port on the pod to forward to
+  type: NodePort  # Expose the service on each node’s IP at a static port

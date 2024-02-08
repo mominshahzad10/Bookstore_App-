@@ -1,0 +1,12 @@
+apiVersion: v1  # Version of the Kubernetes API to use
+kind: Service  # Type of resource being created, in this case a Service
+metadata:
+  name: mongodb-service  # Name of the Service
+
+spec:  # Specification of the Service
+  ports:
+  - port: 27017  # The port the service is exposed on
+    targetPort: 27017  # The port on the pod to forward to
+  selector:
+    role: mongo  # Selector to identify the pods that this service should route to
+  clusterIP: None  # This indicates a headless service, not assigning a cluster IP

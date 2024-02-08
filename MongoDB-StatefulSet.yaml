@@ -1,0 +1,40 @@
+apiVersion: apps/v1  # Version of the Kubernetes API for StatefulSets
+kind: StatefulSet  # Type of resource, a StatefulSet
+metadata:
+  name: mongodb  # Name of the StatefulSet
+
+spec:
+  serviceName: "mongodb"  # Name of the service that gets created for this StatefulSet
+  replicas: 1  # Number of desired replicas
+  selector:
+    matchLabels:
+      role: mongo  # Selector to identify the pods that this StatefulSet manages
+  template:
+    metadata:
+      labels:
+        role: mongo  # Labels for the pods
+    spec:
+      containers:
+      - name: mongo  # Container name
+        image: mongo  # MongoDB image to use
+        ports:
+        - containerPort: 27017  # Port that the container exposes
+        env:
+          - name: MONGO_INITDB_ROOT_USERNAME  # MongoDB username environment variable
+            value: "mominmongo"
+          - name: MONGO_INITDB_ROOT_PASSWORD  # MongoDB password environment variable
+            value: "Aisha1234"
+        command: ["mongod", "--auth", "--bind_ip", "0.0.0.0"]  # Command to start MongoDB with authentication
+        volumeMounts:
+        - name: mongodb-data  # Volume mount for MongoDB data
+          mountPath: /data/db
+
+  volumeClaimTemplates:
+  - metadata:
+      name: mongodb-data  # Name of the PersistentVolumeClaim
+    spec:
+      accessModes: [ "ReadWriteOnce" ]  # Access mode for the volume
+      storageClassName: hostpath  # Storage class for the volume
+      resources:
+        requests:
+          storage: 1Gi  # Requested storage size for the volume
